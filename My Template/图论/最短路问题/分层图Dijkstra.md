@@ -39,7 +39,6 @@ void dij() {
         }
     }
 } 
-//上面和基础dij相同
 
 signed main() {
     ios::sync_with_stdio(0);

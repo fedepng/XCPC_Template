@@ -45,5 +45,4 @@ int query(string s) {
     }
     return ans;
 }
-
 ```

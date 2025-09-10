@@ -54,5 +54,4 @@ signed main() {
     }
     dij();
 }
-
 ```

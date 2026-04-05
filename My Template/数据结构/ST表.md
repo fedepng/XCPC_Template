@@ -3,32 +3,68 @@
 ```cpp
 #include<bits/stdc++.h>
 #define int long long
-#define maxn 200005
+using namespace std;
 
 const int INF = 1e18;
 
-using namespace std;
-
-int n, q, h[maxn], log[maxn], rmax[maxn][18], rmin[maxn][18];
+int n, q;
+vector<int> h, lg;
+vector<vector<int>> mx, mn;
 
 void init() {
-    for (int i = 2; i <= n; i++) log[i] = log[i >> 1] + 1;
-    for (int i = 1; i <= n; i++) rmax[i][0] = rmin[i][0] = h[i];
-    for (int j = 1; (1 << j) <= n; j++) {
+    lg.assign(n + 1, 0);
+    for (int i = 2; i <= n; i++) {
+        lg[i] = lg[i >> 1] + 1;
+    }
+    
+    int k = lg[n] + 1;
+    mx.assign(n + 1, vector<int>(k));
+    mn.assign(n + 1, vector<int>(k));
+    
+    for (int i = 1; i <= n; i++) {
+        mx[i][0] = mn[i][0] = h[i];
+    }
+    
+    for (int j = 1; j < k; j++) {
         for (int i = 1; i + (1 << j) - 1 <= n; i++) {
-            rmax[i][j] = max(rmax[i][j - 1], rmax[i + (1 << j - 1)][j - 1]);
-            rmin[i][j] = min(rmin[i][j - 1], rmin[i + (1 << j - 1)][j - 1]);
+            mx[i][j] = max(mx[i][j - 1], mx[i + (1 << (j - 1))][j - 1]);
+            mn[i][j] = min(mn[i][j - 1], mn[i + (1 << (j - 1))][j - 1]);
         }
     }
 }
 
-int query_max(int l, int r) {
-    int len = log[r - l + 1];
-    return max(rmax[l][len], rmax[r - (1 << len) + 1][len]); 
+int qmax(int l, int r) {
+    int len = lg[r - l + 1];
+    return max(mx[l][len], mx[r - (1 << len) + 1][len]);
 }
 
-int query_min(int l, int r) {
-    int len = log[r - l + 1];
-    return min(rmin[l][len], rmin[r - (1 << len) + 1][len]); 
+int qmin(int l, int r) {
+    int len = lg[r - l + 1];
+    return min(mn[l][len], mn[r - (1 << len) + 1][len]);
+}
+
+void solve() {
+    cin >> n >> q;
+    h.resize(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> h[i];
+    }
+    
+    init();
+    
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        cout << qmax(l, r) - qmin(l, r) << '\n';
+    }
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int t; cin >> t;
+    while (t--)
+    solve();
+    return 0;
 }
 ```

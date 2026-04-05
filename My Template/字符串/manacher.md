@@ -1,5 +1,4 @@
 manacher算法模板
-
 ```cpp
 #include<bits/stdc++.h>
 #define int long long

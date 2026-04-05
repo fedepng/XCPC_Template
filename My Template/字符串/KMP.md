@@ -1,30 +1,80 @@
-KMP算法查询字符串模板
+# KMP算法模板
 
 ```cpp
 #include<bits/stdc++.h>
 #define int long long
-#define maxn 200005
-
 using namespace std;
 
 const int INF = 1e18;
 
-string s1, s2;
-int ne[maxn];
-
-void kmp() {
-    for (int i = 1, j; i < s2.size(); i++) {
-        while (j > 0 && s2[i] != s2[j]) j = ne[j - 1];
-        if (s2[i] == s2[j]) j++;
-        ne[i] = j;
+struct KMP {
+    string s, p;
+    vector<int> nxt;
+    
+    KMP(string& t, string& pattern) : s(t), p(pattern) {
+        nxt.resize(p.size());
+        build();
     }
-    for (int i = 0, j; i < s1.size(); i++) {
-        while (j > 0 && s1[i] != s2[j]) j = ne[j - 1];
-        if (s1[i] == s2[j]) j++;
-        if (j == s2.size()) {
-            cout << i + 1 - s2.size() + 1 << ' ';
-            j = ne[j - 1];
+    
+    void build() {
+        int j = 0;
+        for (int i = 1; i < (int)p.size(); i++) {
+            while (j > 0 && p[i] != p[j]) j = nxt[j - 1];
+            if (p[i] == p[j]) j++;
+            nxt[i] = j;
         }
     }
+    
+    vector<int> search() {
+        vector<int> res;
+        int j = 0;
+        for (int i = 0; i < (int)s.size(); i++) {
+            while (j > 0 && s[i] != p[j]) j = nxt[j - 1];
+            if (s[i] == p[j]) j++;
+            if (j == (int)p.size()) {
+                res.push_back(i - p.size() + 2);  // 1-indexed 位置
+                j = nxt[j - 1];
+            }
+        }
+        return res;
+    }
+    
+    int count() {
+        int res = 0;
+        int j = 0;
+        for (int i = 0; i < (int)s.size(); i++) {
+            while (j > 0 && s[i] != p[j]) j = nxt[j - 1];
+            if (s[i] == p[j]) j++;
+            if (j == (int)p.size()) {
+                res++;
+                j = nxt[j - 1];
+            }
+        }
+        return res;
+    }
+};
+
+void solve() {
+    string s, p;
+    cin >> s >> p;
+    
+    KMP kmp(s, p);
+    
+    vector<int> pos = kmp.search();
+    for (int x : pos) {
+        cout << x << ' ';
+    }
+    cout << '\n';
+    cout << kmp.count() << '\n';
+}
+
+signed main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0), cout.tie(0);
+    int t; cin >> t;
+    while (t--) {
+        solve();
+    }
+    return 0;
 }
 ```

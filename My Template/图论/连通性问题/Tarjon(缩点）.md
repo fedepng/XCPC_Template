@@ -1,4 +1,5 @@
-# Tarjon模板
+# Tarjon算法模板（缩点）
+
 ```cpp
 #include<bits/stdc++.h>
 #define int long long
@@ -7,8 +8,8 @@ using namespace std;
 const int INF = 1e18;
 
 int n, m;
-vector<vector<int>> edges;
-vector<int> dfn, low, bel, st;
+vector<vector<int>> edges, dag;
+vector<int> dfn, low, bel, sz, st;
 vector<bool> ins;
 int cnt, idx;
 
@@ -33,6 +34,7 @@ void dfs(int u) {
             v = st.back();
             st.pop_back();
             bel[v] = idx;
+            sz[idx]++;
             ins[v] = false;
         } while (v != u);
     }
@@ -42,12 +44,31 @@ void tarjan() {
     dfn.assign(n + 1, 0);
     low.assign(n + 1, 0);
     bel.assign(n + 1, 0);
+    sz.assign(n + 1, 0);
     ins.assign(n + 1, false);
     st.clear();
     cnt = idx = 0;
     
     for (int i = 1; i <= n; i++) {
         if (!dfn[i]) dfs(i);
+    }
+}
+
+void build_dag() {
+    dag.assign(idx + 1, vector<int>());
+    
+    for (int u = 1; u <= n; u++) {
+        for (int v : edges[u]) {
+            if (bel[u] != bel[v]) {
+                dag[bel[u]].push_back(bel[v]);
+            }
+        }
+    }
+    
+    // 去重
+    for (int i = 1; i <= idx; i++) {
+        sort(dag[i].begin(), dag[i].end());
+        dag[i].erase(unique(dag[i].begin(), dag[i].end()), dag[i].end());
     }
 }
 
@@ -62,6 +83,7 @@ void solve() {
     }
     
     tarjan();
+    build_dag();
 }
 
 signed main() {

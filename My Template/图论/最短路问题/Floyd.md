@@ -59,14 +59,6 @@ void solve() {
     }
     
     floyd();
-    
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (dis[i][j] == INF) cout << "INF ";
-            else cout << dis[i][j] << ' ';
-        }
-        cout << '\n';
-    }
 }
 
 signed main() {
